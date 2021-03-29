@@ -1,80 +1,112 @@
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class dbload {
+	
+	private final static int INTEGER_BYTE_SIZE = 4;
+	private final static int TO_MILISECOND = 10^6;
+	private final static String DATA_SAMPLE = "./DBS_Sample.csv";
+	
+	
 	public static void main(String[] args) {
-		if (args.length == 3) {
+		
+		if (args.length == 3 && args[0].equals("-p")) {
 			
 			System.out.println("Argument one = " + args[0]);
 	        System.out.println("Argument two = " + args[1]);
 	        System.out.println("Argument three = " + args[2]);
 	        
-//	        int bufferSize = Integer.parseInt(args[1]);
-//	        String test = "test";
+	        int pageSize = Integer.parseInt(args[1]);
+	        int remainingSize = Integer.parseInt(args[1]);
+	        int pageCount = 0;
+	        int numberOfRecord = 0;
+	        int totalRecord = 0;
 	        
-	        List<List<String>> records = new ArrayList<>();
-	        try (BufferedReader br = new BufferedReader(new FileReader("task3-sample.csv"))) {
+	        long startTime = System.nanoTime();
+	        System.out.println("Generating heap file ...");
+	        
+	        try (BufferedReader br = new BufferedReader(new FileReader(DATA_SAMPLE))) {
 	            String line;
+	            FileOutputStream fileOs = new FileOutputStream("heap." + pageSize);
+	            DataOutputStream os = new DataOutputStream(fileOs);
+	            
 	            while ((line = br.readLine()) != null) {
-	                String[] values = line.split(",");
-	                System.out.println(values[1]);
-	                records.add(Arrays.asList(values));
+	            	
+//	            	create a page (pageCount++)
+	            	if (pageCount == 0) {pageCount++;}
+	            	
+	            	String[] values = line.split(",");
+	                
+//	            	pageSize - data bytes to control record size in a page. If the whole record fit in the current page, the add, else create new page
+	                int sizeOfRecord = (INTEGER_BYTE_SIZE * 6 + values[1].length() + values[5].length() + values[3].length() + values[8].length());
+	                
+	                if (remainingSize > sizeOfRecord) {
+	                	
+	                	os.writeUTF(values[1]);
+	                	os.writeInt(Integer.parseInt(values[0]));
+			            os.writeInt(Integer.parseInt(values[2]));
+			            os.writeUTF(values[3]);
+			            os.writeInt(Integer.parseInt(values[4]));
+			            os.writeUTF(values[5]);
+			            os.writeInt(Integer.parseInt(values[6]));
+			            os.writeInt(Integer.parseInt(values[7]));
+			            os.writeUTF(values[8]);
+			            os.writeInt(Integer.parseInt(values[9]));
+			            
+			            remainingSize -= sizeOfRecord;
+			            numberOfRecord++;
+			            totalRecord++;
+			            
+	                } else {
+	                	// Add recordCount each page, create new page by adding delimiter to separate the pages ($)
+	                	os.writeUTF(numberOfRecord + "$");
+	                	
+	                	// Reset counter
+	                	pageCount++;
+	                	numberOfRecord = 0;
+	                	remainingSize = Integer.parseInt(args[1]);
+	                	
+	                	os.writeUTF(values[1]);
+	                	os.writeInt(Integer.parseInt(values[0]));
+			            os.writeInt(Integer.parseInt(values[2]));
+			            os.writeUTF(values[3]);
+			            os.writeInt(Integer.parseInt(values[4]));
+			            os.writeUTF(values[5]);
+			            os.writeInt(Integer.parseInt(values[6]));
+			            os.writeInt(Integer.parseInt(values[7]));
+			            os.writeUTF(values[8]);
+			            os.writeInt(Integer.parseInt(values[9]));
+			            
+			            remainingSize -= sizeOfRecord;
+			            numberOfRecord++;
+			            totalRecord++;
+	                	
+	                }
+		            
 	            }
 	            
-	            FileOutputStream fileOs = new FileOutputStream("heap." + args[1]);
-	            ObjectOutputStream os = new ObjectOutputStream(fileOs);
-	            os.writeInt(2048);
-	            os.writeUTF("hello");
 	            os.close();
 	            
 	        } catch (FileNotFoundException e1) {
+	        	System.err.println("Cannot find file: " + args[2]);
 				e1.printStackTrace();
 			} catch (IOException e1) {
+				System.err.println("IOException");
 				e1.printStackTrace();
 			}
 	        
+	        long endTime = System.nanoTime();
+	        long duration = (endTime - startTime) / TO_MILISECOND;
 	        
+	        System.out.println("Successfully generated: " + "heap." + pageSize);
+	        System.out.println("Total of Records loaded: " + totalRecord);
+	        System.out.println("Number of Pages used: " + pageCount);
+	        System.out.println("Time taken in miliseconds: " + duration);
 	        
-//	        char c ='c';
-//	        String test = "test";
-//	        String s = "";
-//	        for (int i = 0; i < test.length(); i++) {
-//	        	s += String.format("%8s", Integer.toBinaryString((int) test.charAt(i))).replace(' ', '0');
-//	        	System.out.println(s);
-//	        }
-	        
-//	        byte[] data = "4".getBytes(StandardCharsets.UTF_8);
-//	        System.out.println(String.format("%32s", Integer.toBinaryString(255)).replace(' ', '0'));
-//	        System.out.println((int) c);
-//	        System.out.println(Character.BYTES);
-//	        
-//	        Path path = Paths.get("doc.txt");
-//	        byte[] bytes = "Hellow".getBytes(StandardCharsets.UTF_8);
-//	 
-//	        try {
-//	        	System.out.println(bytes[0]);
-//	            Files.write(path, bytes);    // Java 7+ only
-//	            System.out.println("Successfully written data to the file");
-//	        }
-//	        catch (IOException e) {
-//	            e.printStackTrace();
-//	        }
-	        
-//	        File file = new File("heap." + args[1]);
-//	        try (FileWriter fos = new FileWriter(file)) {
-//	            fos.write(s);
-//	            System.out.println("Successfully written data to the file");
-//	        } catch (IOException e) {
-//	            e.printStackTrace();
-//	        }
 	        
 		} else {
 			System.err.println("Please provide the following command: java dbload -p [pagesize] [datafile]");
