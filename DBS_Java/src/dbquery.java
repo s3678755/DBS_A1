@@ -20,7 +20,7 @@ public class dbquery {
 			
 			try {
 				
-				FileInputStream fileIs = new FileInputStream("heap." + args[1]);			
+				FileInputStream fileIs = new FileInputStream("~\\DBS_A1\\DBS_Java\\heap." + args[1]);			
 				DataInputStream is = new DataInputStream(fileIs);
 				
 				int remainingBytes = is.available();
@@ -35,7 +35,6 @@ public class dbquery {
 				String sensorName;
 				int hourlyCounts;
 				
-				System.out.println("Byte available: " + remainingBytes); 
 				boolean isChecking = false;
 													
 				while(remainingBytes > 0) {
