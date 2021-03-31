@@ -58,9 +58,9 @@ public class dbquery {
 					
 					String query = sensorID + dateTime  ;
 					
-					if (query.equals(args[0])) {
+					if (query.contains(args[0])) {
 						totalMatch++;
-						System.out.println("UUID: " + id + "| " + "DateTime: " + dateTime + "| " + "Year: " + year + "| " + "Month: " + month + "| " + "MDate: " + mdate + "| " + "Day: " + day + "| " + "Time: " + time + "| " + "Sensor_ID: " + sensorID + "| " + "Sensor_Name: " + sensorName + "| " + "Hourly Counts: " + hourlyCounts);
+						System.out.println("UUID: " + id + " | " + "DateTime: " + dateTime + " | " + "Year: " + year + " | " + "Month: " + month + " | " + "MDate: " + mdate + " | " + "Day: " + day + " | " + "Time: " + time + " | " + "Sensor_ID: " + sensorID + " | " + "Sensor_Name: " + sensorName + " | " + "Hourly Counts: " + hourlyCounts);
 					}
 					
 					remainingBytes = is.available();
@@ -83,7 +83,7 @@ public class dbquery {
 				is.close();
 			
 			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
+				System.err.println("Cannot find file: heap." + args[1]);
 			} catch (EOFException e1) {
 				e1.printStackTrace();
 				System.err.println(e1);

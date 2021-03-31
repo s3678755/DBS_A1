@@ -8,8 +8,11 @@ import java.io.IOException;
 public class dbload {
 	
 	private final static int INTEGER_BYTE_SIZE = 4;
+	private final static int BYTE_SIZE = 1024;
 	private final static int TO_MILISECOND = 10^6;
-	private final static String DATA_SAMPLE = "./DBS_Sample.csv";
+	
+//	For testing purpose
+//	private final static String DATA_SAMPLE = "./DBS_Sample.csv";
 	
 	
 	public static void main(String[] args) {
@@ -21,6 +24,12 @@ public class dbload {
 	        System.out.println("Argument three = " + args[2]);
 	        
 	        int pageSize = Integer.parseInt(args[1]);
+	        
+	        if ( (pageSize % BYTE_SIZE) != 0) {
+	        	System.err.println("Size input must be a multiple of 1KB");
+	        	System.exit(0);
+	        }
+	        
 	        int remainingSize = Integer.parseInt(args[1]);
 	        int pageCount = 0;
 	        int numberOfRecord = 0;
@@ -29,7 +38,7 @@ public class dbload {
 	        long startTime = System.nanoTime();
 	        System.out.println("Generating heap file ...");
 	        
-	        try (BufferedReader br = new BufferedReader(new FileReader(DATA_SAMPLE))) {
+	        try (BufferedReader br = new BufferedReader(new FileReader(args[2]))) {
 	            String line;
 	            FileOutputStream fileOs = new FileOutputStream("heap." + pageSize);
 	            DataOutputStream os = new DataOutputStream(fileOs);
