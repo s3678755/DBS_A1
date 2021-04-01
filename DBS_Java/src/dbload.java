@@ -9,7 +9,7 @@ public class dbload {
 	
 	private final static int INTEGER_BYTE_SIZE = 4;
 	private final static int BYTE_SIZE = 1024;
-	private final static int TO_MILISECOND = 10^6;
+	private final static int TO_SECOND = 1000000000;
 	
 //	For testing purpose
 //	private final static String DATA_SAMPLE = "./DBS_Sample.csv";
@@ -98,6 +98,9 @@ public class dbload {
 		            
 	            }
 	            
+	            // Add the recordCount even the page is not full
+	            os.writeUTF(numberOfRecord + "$");
+	            
 	            os.close();
 	            
 	        } catch (FileNotFoundException e1) {
@@ -109,7 +112,7 @@ public class dbload {
 			}
 	        
 	        long endTime = System.nanoTime();
-	        long duration = (endTime - startTime) / TO_MILISECOND;
+	        long duration = (endTime - startTime) / TO_SECOND;
 	        
 	        System.out.println("Successfully generated: " + "heap." + pageSize);
 	        System.out.println("Total of Records loaded: " + totalRecord);

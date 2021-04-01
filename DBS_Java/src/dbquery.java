@@ -6,7 +6,8 @@ import java.io.IOException;
 
 public class dbquery {
 	
-	private final static int TO_MILISECOND = 10^6;
+	private final static int END_OF_PAGE_BYTE_SIZE = 5;
+	private final static int TO_SECOND = 1000000000;
 
 	public static void main(String[] args) {
 		if (args.length == 2) {
@@ -41,7 +42,7 @@ public class dbquery {
 				
 				boolean isChecking = false;
 													
-				while(remainingBytes > 0) {
+				while(remainingBytes > END_OF_PAGE_BYTE_SIZE) {
 					
 //					Add a lock to check if the next information is dateTime or end of page
 					if(!isChecking) {
@@ -68,7 +69,7 @@ public class dbquery {
 					
 					remainingBytes = is.available();
 					
-					if (remainingBytes > 0) {
+					if (remainingBytes > END_OF_PAGE_BYTE_SIZE) {
 						
 						String checkIfEndOfPage = is.readUTF();
 						isChecking = true;
@@ -95,7 +96,7 @@ public class dbquery {
 			}
 			
 			long endTime = System.nanoTime();
-			long duration = (endTime - startTime) / TO_MILISECOND;
+			long duration = (endTime - startTime) / TO_SECOND;
 			
 			System.out.println("Found total " + totalMatch + " record(s)");
 			System.out.println("Time taken in miliseconds: " + duration);
