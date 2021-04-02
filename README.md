@@ -4,7 +4,7 @@ Deadline: 4/4
 
 bab1754dcc5c35b8c79d080079f4622f4e721200
 
-mongoimport --db DBS_A1 --collection data --file ./output-mongodb.json --jsonArray
+mongoimport --db DBS_A1 --collection data --file ./output-mongo.json --jsonArray
 
 For local: java -cp ./DBS_Assign1/DBS_Java/src db.main.Dbload a b c
 
