@@ -15,7 +15,7 @@ sample.map(sensor => {
                   Month: sensor.Month, 
                   Mdate: sensor.Mdate, 
                   Day: sensor.Day, 
-                  ID: sensor.ID, 
+                  Time: sensor.Time, 
                   Hourly_Counts: sensor.Hourly_Counts 
                 }]);
        } else {
@@ -27,7 +27,7 @@ sample.map(sensor => {
                   Month: sensor.Month, 
                   Mdate: sensor.Mdate, 
                   Day: sensor.Day, 
-                  ID: sensor.ID, 
+                  Time: sensor.Time,
                   Hourly_Counts: sensor.Hourly_Counts }]);
        }
 });
